@@ -5,6 +5,9 @@
     Column must be in years
     You should use attributes formed and split for computing the lifespan
     Your script can be executed on any database
+
+    Note: Output log might be outdated, (FOR SURE!)
+    Make sure you use the current dates in your script
 */
 
 SELECT band_name, ifnull(split, 2022)-ifnull(formed, 0) AS lifespan
