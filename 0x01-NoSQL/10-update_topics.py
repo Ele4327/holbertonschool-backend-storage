@@ -12,5 +12,5 @@ def update_topics(mongo_collection, name, topics):
     approached in the school"""
     mongo_collection.update_many(
         { 'name': name },
-        { 'set': {'topics': topics} }
+        { '$set': {'topics': topics} }
     )
