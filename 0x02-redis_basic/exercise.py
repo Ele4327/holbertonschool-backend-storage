@@ -18,11 +18,14 @@ class Cache:
 
     Type-annotate store correctly. Remember that data can
     be a str, bytes, int or float."""
+
     def __init__(self):
+        """Initialize a Redis client and flush it."""
         self._redis = redis.Redis()
         self._redis.flushdb()
 
     def store(self, data) -> Any[str, bytes, int, float]:
+        """Store data in Redis and return the key."""
         key_value = uuid.uuid4()
         self._redis.set((key_value), data)
         return (key_value)
