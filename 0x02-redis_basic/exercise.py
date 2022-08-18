@@ -24,5 +24,5 @@ class Cache:
 
     def store(self, data) -> Any[str, bytes, int, float]:
         key_value = uuid.uuid4()
-        self._redis.set(str(key_value), data)
+        self._redis.set((key_value), data)
         return (key_value)
