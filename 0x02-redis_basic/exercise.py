@@ -19,7 +19,22 @@ def count_calls(method: Callable) -> Callable:
         """ Wrapper function for the method. """
         self._redis.incr(key)
         return method(self, *args, **kwds)
-    return wrapper
+    return(wrapper)
+
+
+def call_history(method: Callable) -> Callable:
+    """ Returns a list of all the calls made to a function. """
+    inputs_list = method.__qualname__ + ":inputs"
+    outputs_list = method.__qualname__ + ":outputs"
+
+    @wraps(method)
+    def wrapper(self, *args) -> bytes:
+        """ Wrapper function for the method. """
+        self._redis.rpush(inputs_list, str(args))
+        output_value = method(self, *args)
+        self._redis.rpush(outputs_list, output_value)
+        return output_value
+    return(wrapper)
 
 
 class Cache:
