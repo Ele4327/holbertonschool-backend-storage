@@ -37,6 +37,23 @@ def call_history(method: Callable) -> Callable:
     return(wrapper)
 
 
+def replay(method: Callable) -> None:
+    """ Replays the calls made to a function. """
+    redis = method.__self__._redis
+    qual_name = method.__qualname__
+    calls_value = redis.get(qual_name).decode("utf-8")
+    print("{} was called {} times:".format(qual_name, calls_value))
+    inputs = qual_name + ":inputs"
+    outputs = qual_name + ":outputs"
+    inputs_lists = redis.lrange(inputs, 0, -1)
+    outputs_lists = redis.lrange(outputs, 0, -1)
+    zip_list = list(zip(inputs_lists, outputs_lists))
+    for key_value, value in zip_list:
+        key_value = key_value.decode("utf-8")
+        value = value.decode("utf-8")
+        print("{}(*{}) -> {}".format(qual_name, key_value, value))
+
+
 class Cache:
     """Create a store method that takes a data
     argument and returns a string. The method should
