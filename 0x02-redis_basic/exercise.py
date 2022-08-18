@@ -7,6 +7,19 @@ of the Redis client as a private variable named _redis
 from typing import Any, Optional, Callable, Union
 import redis
 import uuid
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """Counts the number of times a function is called."""
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self, *args, **kwds):
+        """ Wrapper function for the method. """
+        self._redis.incr(key)
+        return method(self, *args, **kwds)
+    return wrapper
 
 
 class Cache:
